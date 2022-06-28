@@ -11,6 +11,7 @@
 
 "use strict";
 
+const { resolve } = require("bluebird");
 var Promise = require("bluebird"),
   exerciseUtils = require("./utils");
 
@@ -49,13 +50,11 @@ function problemA() {
     console.log('-- A. callback version --');
     blue(stanza);
   }); */
+  // promise version
   promisifiedReadFile("poem-one/stanza-01.txt").then((stanza) => {
     /* console.log("-- A. callback version --"); */
     blue(stanza);
   });
-
-  // promise version
-  // ???
 }
 
 function problemB() {
@@ -76,6 +75,7 @@ function problemB() {
     blue(stanza3);
   }); */
 
+  // promise version
   promisifiedReadFile("poem-one/stanza-02.txt").then((stanza2) => {
     blue(stanza2);
   });
@@ -83,9 +83,6 @@ function problemB() {
   promisifiedReadFile("poem-one/stanza-03.txt").then((stanza3) => {
     blue(stanza3);
   });
-
-  // promise version
-  // ???
 }
 
 function problemC() {
@@ -122,14 +119,18 @@ function problemD() {
    */
 
   // callback version
-  readFile("poem-one/wrong-file-name.txt", function (err, stanza4) {
+  /*   readFile("poem-one/wrong-file-name.txt", function (err, stanza4) {
     console.log("-- D. callback version (stanza four) --");
     if (err) magenta(new Error(err));
     else blue(stanza4);
-  });
+  }); */
 
   // promise version
-  // ???
+  promisifiedReadFile("poem-one/wrong-file-name.txt")
+    .then((stanza4) => {
+      blue(stanza4);
+    })
+    .catch((err) => magenta(new Error(err)));
 }
 
 function problemE() {
@@ -140,9 +141,8 @@ function problemE() {
    *    cuaquiera de las lecturas
    *
    */
-
   // callback version
-  readFile("poem-one/stanza-03.txt", function (err, stanza3) {
+  /*   readFile("poem-one/stanza-03.txt", function (err, stanza3) {
     console.log("-- E. callback version (stanza three) --");
     if (err) return magenta(new Error(err));
     blue(stanza3);
@@ -151,10 +151,17 @@ function problemE() {
       if (err2) return magenta(new Error(err2));
       blue(stanza4);
     });
-  });
-
+  }); */
   // promise version
-  // ???
+  promisifiedReadFile("poem-one/stanza-03.txt")
+    .then((stanza3) => {
+      return blue(stanza3);
+    })
+    .then((resolve) => {
+      return promisifiedReadFile("poem-one/wrong-file-name.txt");
+    })
+    .then((stanza4) => blue(stanza4))
+    .catch((err) => magenta(new Error(err)));
 }
 
 function problemF() {
