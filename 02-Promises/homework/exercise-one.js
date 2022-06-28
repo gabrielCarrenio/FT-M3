@@ -50,7 +50,7 @@ function problemA() {
     blue(stanza);
   }); */
   promisifiedReadFile("poem-one/stanza-01.txt").then((stanza) => {
-    console.log("-- A. callback version --");
+    /* console.log("-- A. callback version --"); */
     blue(stanza);
   });
 
@@ -67,12 +67,20 @@ function problemB() {
    */
 
   // callback version
-  readFile("poem-one/stanza-02.txt", function (err, stanza2) {
+  /* readFile("poem-one/stanza-02.txt", function (err, stanza2) {
     console.log("-- B. callback version (stanza two) --");
     blue(stanza2);
   });
   readFile("poem-one/stanza-03.txt", function (err, stanza3) {
     console.log("-- B. callback version (stanza three) --");
+    blue(stanza3);
+  }); */
+
+  promisifiedReadFile("poem-one/stanza-02.txt").then((stanza2) => {
+    blue(stanza2);
+  });
+  promisifiedReadFile("poem-one/stanza-03.txt");
+  promisifiedReadFile("poem-one/stanza-03.txt").then((stanza3) => {
     blue(stanza3);
   });
 
