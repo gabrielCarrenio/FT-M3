@@ -113,6 +113,7 @@ function problemC() {
     })
     .then((stanza3) => {
       blue(stanza3);
+      console.log("done");
     });
 }
 
@@ -135,7 +136,14 @@ function problemD() {
     .then((stanza4) => {
       blue(stanza4);
     })
-    .catch((err) => magenta(new Error(err)));
+    .catch((err) => magenta(new Error(err))); // catch es un atajo, para el errorHandler
+  // lo que catch recibe es un errorH = .then(null, errorH), por eso no hay problemas
+  // si el errorH lo arrastramos en algun then, ya que siempre va a ir llevando el .then(null, errorH)
+  // otra alternativa:
+  /*   promisifiedReadFile("poem-one/wrong-file-name.txt").then(
+    (stanza4) => blue(stanza4),
+    (err) => magenta(new Error(err))
+  ); */
 }
 
 function problemE() {
@@ -164,7 +172,7 @@ function problemE() {
       return promisifiedReadFile("poem-one/wrong-file-name.txt");
     })
     .then((stanza4) => blue(stanza4))
-    .catch((err) => magenta(new Error(err)));
+    .catch((err) => magenta(new Error(err))); // no corta la resolucion de las promesas.. pero si permite al final de todas las then rechazadas, catch captura el errorHandler!,no es que del rechazo de una promesa resuelta con then, directamente se pasa al .catch si no que se van rechazando de forma encadenada y asi se logra llegar al .catch! porque ningun .then tiene un errorHandler definido...
 }
 
 function problemF() {
@@ -205,5 +213,6 @@ function problemF() {
     .catch((err) => {
       magenta(new Error(err));
     })
-    .finally(() => console.log("done"));
+    .finally(() => console.log("done")); // siempre se ejecuta este finally independientemente si la promesa se resuelve o rechaza!
+  //podria agregar console.log("done")) al ultimo .then, y al catch pero estaria repitiendo codigo! asi que .finally nos soluciona este inconveniente!
 }
