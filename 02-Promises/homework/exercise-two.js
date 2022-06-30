@@ -108,13 +108,18 @@ function problemB() {
   ); */
 
   // promise version
-
+  //En este caso, no aplicamos el .then en cada elemento del arr que le otorgamos a Promise.all porque no necesitamos que el orden sea aleatorio, con que simplemente Promise.all retorne un arr con promises, ya basta para iterar esas promesas con un ciclo y asi ir haciendo cada uno de los .then correspondientes!
   Promise.all(filenames.map((filename) => promisifiedReadFile(filename))).then(
     (promisesFilenames) => {
       promisesFilenames.forEach((stanza) => blue(stanza));
       console.log("done");
     }
   );
+  // otra forma:
+  /*   const filesNamesResolve = filenames.map((filename) =>
+    promisifiedReadFile(filename).then((stanza) => blue(stanza))
+  );
+  Promise.all(filesNamesResolve).then(() => console.log("done")); */
 }
 
 function problemC() {
@@ -133,7 +138,7 @@ function problemC() {
   });
 
   // callback version
-  async.eachSeries(
+  /*   async.eachSeries(
     filenames,
     function (filename, eachDone) {
       readFile(filename, function (err, stanza) {
@@ -145,10 +150,23 @@ function problemC() {
     function (err) {
       console.log("-- C. callback version done --");
     }
-  );
+  ); */
 
   // promise version
-  // ???
+  /*   Promise.all( // resolviendo las promesas en el mismo map... solamente seria como prorrogar el valor del .then, un pasa manos!
+    filenames.map((filename) =>
+      promisifiedReadFile(filename).then((stanza) => stanza)
+    )
+  ).then((promisesFilenames) => {
+    promisesFilenames.forEach((stanza) => blue(stanza));
+    console.log("done");
+  }); */
+  Promise.all(filenames.map((filename) => promisifiedReadFile(filename))).then(
+    (promisesFilenames) => {
+      promisesFilenames.forEach((stanza) => blue(stanza));
+      console.log("done");
+    }
+  );
 }
 
 function problemD() {
@@ -169,7 +187,7 @@ function problemD() {
   filenames[randIdx] = "wrong-file-name-" + (randIdx + 1) + ".txt";
 
   // callback version
-  async.eachSeries(
+  /*   async.eachSeries(
     filenames,
     function (filename, eachDone) {
       readFile(filename, function (err, stanza) {
@@ -183,10 +201,29 @@ function problemD() {
       if (err) magenta(new Error(err));
       console.log("-- D. callback version done --");
     }
-  );
+  ); */
 
   // promise version
-  // ???
+  // Aca basicamente realizo lo mismo que vengo haciendo en los demas .all, solo que manejo el errorHandler de cualquier promesa
+  //que devuelva el Promise.all. Capturo el erroH posible de cualquier promesa con catch y considero loggear done en cualquier caso
+  // si resolvemos o rechazamos las promises...
+  /*   Promise.all(filenames.map((filename) => promisifiedReadFile(filename)))
+    .then((promisesFilenames) => {
+      promisesFilenames.forEach((stanza) => blue(stanza));
+    })
+    .catch((err) => magenta(new Error(err)))
+    .finally(() => console.log("done")); */
+  Promise.all(
+    filenames.reduce(
+      (acc, filename) => [...acc, promisifiedReadFile(filename)],
+      []
+    )
+  )
+    .then((promisesFilenames) => {
+      promisesFilenames.forEach((stanza) => blue(stanza));
+    })
+    .catch((err) => magenta(new Error(err)))
+    .finally(() => console.log("done"));
 }
 
 function problemE() {
@@ -198,6 +235,11 @@ function problemE() {
 
   var fs = require("fs");
   function promisifiedWriteFile(filename, str) {
-    // tu código aquí
+    return new Promise(filename)
+      .then((stanza) => {
+        blue(stanza);
+      })
+      .catch((err) => magenta(new Error(err)))
+      .finally(() => console.log(str));
   }
 }
