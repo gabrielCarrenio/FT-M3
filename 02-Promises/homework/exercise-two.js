@@ -38,7 +38,7 @@ function problemA() {
    */
 
   // callback version
-  /*     async.each(
+  /*   async.each(
     ["poem-two/stanza-01.txt", "poem-two/stanza-02.txt"],
     function (filename, eachDone) {
       readFile(filename, function (err, stanza) {
@@ -53,19 +53,29 @@ function problemA() {
   ); */
 
   // promise version
-  async.each(
-    ["poem-two/stanza-01.txt", "poem-two/stanza-02.txt"],
-    function (filename, eachDone) {
-      promisifiedReadFile(filename).then((stanza) => {
-        console.log("-- A. callback version --");
-        blue(stanza);
-        eachDone();
-      });
-    },
-    function (err) {
-      console.log("-- A. callback version done --");
+  /*   Promise.all([ // una forma
+    promisifiedReadFile("poem-two/stanza-01.txt").then((stanza) => {
+      blue(stanza);
+    }),
+    promisifiedReadFile("poem-two/stanza-02.txt").then((stanza) => {
+      blue(stanza);
+    }),
+  ]).then(() => console.log("done")); */
+  // Solamente encapsulo los iterables en consts para hacer mas facil la lectura del codigo!
+  const promiseOne = promisifiedReadFile("poem-two/stanza-01.txt").then(
+    (stanza) => {
+      blue(stanza);
     }
   );
+  const promiseTwo = promisifiedReadFile("poem-two/stanza-02.txt").then(
+    (stanza) => {
+      blue(stanza);
+    }
+  );
+  // por cada elemento del array que recibe Promise.all, se ejecuta y resuelve de forma random pero no solo se ejecutan las promesas
+  // si no que se ejecutan y resuelven en el mismo momento, por eso Promises.all terminar de resolver todas las promises
+  // agarra y devuelve un array con los values de cada elemento (promesas resueltas con sus respectivos valores ya trabajados en sus thens) y solo resta añadirles el "done" respectivo al final de la ejecicion de las mismas!
+  Promise.all([promiseOne, promiseTwo]).then(() => console.log("done"));
 }
 
 function problemB() {
@@ -99,17 +109,10 @@ function problemB() {
 
   // promise version
 
-  async.each(
-    filenames,
-    function (filename, eachDone) {
-      promisifiedReadFile(filename).then((stanza) => {
-        console.log("-- B. callback version --");
-        blue(stanza);
-        eachDone();
-      });
-    },
-    function (err) {
-      console.log("-- B. callback version done --");
+  Promise.all(filenames.map((filename) => promisifiedReadFile(filename))).then(
+    (promisesFilenames) => {
+      promisesFilenames.forEach((stanza) => blue(stanza));
+      console.log("done");
     }
   );
 }
