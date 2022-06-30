@@ -1,8 +1,10 @@
 "use strict";
 
+const { reject } = require("bluebird");
 var Promise = require("bluebird"),
   async = require("async"),
   exerciseUtils = require("./utils");
+const { resolve } = require("path");
 
 var readFile = exerciseUtils.readFile,
   promisifiedReadFile = exerciseUtils.promisifiedReadFile,
@@ -161,12 +163,35 @@ function problemC() {
     promisesFilenames.forEach((stanza) => blue(stanza));
     console.log("done");
   }); */
-  Promise.all(filenames.map((filename) => promisifiedReadFile(filename))).then(
+  /*   Promise.all(filenames.map((filename) => promisifiedReadFile(filename))).then(
     (promisesFilenames) => {
       promisesFilenames.forEach((stanza) => blue(stanza));
       console.log("done");
     }
-  );
+  ); */ // Forma de hacer con ciclo for:
+  for (
+    let i = 1, promise = promisifiedReadFile(filenames[0]);
+    i <= filenames.length;
+    i++
+  ) {
+    promise = promise.then((stanza) => {
+      blue(stanza);
+      if (i === filenames.length) {
+        console.log("done");
+      } else {
+        return promisifiedReadFile(filenames[i]);
+      }
+    });
+  }
+  //con reduce:
+  /*   filenames
+    .reduce((acc, el) => {
+      return acc.then((stanza) => {
+        if (stanza) blue(stanza);
+        return promisifiedReadFile(el);
+      });
+    }, ...filenames[0])
+    .finally(() => console.log("done")); */
 }
 
 function problemD() {
@@ -213,7 +238,8 @@ function problemD() {
     })
     .catch((err) => magenta(new Error(err)))
     .finally(() => console.log("done")); */
-  Promise.all(
+
+  /* Promise.all( // con reduce
     filenames.reduce(
       (acc, filename) => [...acc, promisifiedReadFile(filename)],
       []
@@ -223,7 +249,27 @@ function problemD() {
       promisesFilenames.forEach((stanza) => blue(stanza));
     })
     .catch((err) => magenta(new Error(err)))
-    .finally(() => console.log("done"));
+    .finally(() => console.log("done")); */
+  for (
+    let i = 1, promesa = promisifiedReadFile(filenames[0]);
+    i <= filenames.length;
+    i++
+  ) {
+    promesa = promesa.then((stanza) => {
+      blue(stanza);
+      if (i === filenames.length) {
+        console.log("done");
+      } else {
+        return promisifiedReadFile(filenames[i]);
+      }
+    });
+    if (i === filenames.length) {
+      promesa.catch((err) => {
+        magenta(new Error(err));
+        console.log("done");
+      });
+    }
+  }
 }
 
 function problemE() {
@@ -235,11 +281,11 @@ function problemE() {
 
   var fs = require("fs");
   function promisifiedWriteFile(filename, str) {
-    return new Promise(filename)
-      .then((stanza) => {
-        blue(stanza);
-      })
-      .catch((err) => magenta(new Error(err)))
-      .finally(() => console.log(str));
+    return new Promise((resolve, reject) => {
+      fs.writeFile(filename, str, (err) => {
+        if (err) reject(err);
+        else resolve("Successful writing");
+      });
+    });
   }
 }
