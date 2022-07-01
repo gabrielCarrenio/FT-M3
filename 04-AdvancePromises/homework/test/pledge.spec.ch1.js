@@ -93,11 +93,11 @@ Chapter 1: Estructura básica y Cambios de Estado
     // y rejector público. Sin embargo, esconder estas implementaciones puede
     // ser complicado.
 
-    xit("tiene un método de instancia `._internalResolve` ", function () {
+    it("tiene un método de instancia `._internalResolve` ", function () {
       expect(typeof promise._internalResolve).toBe("function");
     });
 
-    xit("tiene un método de instancia `._internalReject`", function () {
+    it("tiene un método de instancia `._internalReject`", function () {
       expect(typeof promise._internalReject).toBe("function");
       expect(promise._internalReject).not.toBe(promise._internalResolve);
     });
@@ -105,7 +105,7 @@ Chapter 1: Estructura básica y Cambios de Estado
     // Tenemos una base configurada, ahora trabajemos en el comportamiento
 
     describe("resolviendo ", function () {
-      xit('cambia el estado de la promesa a "fulfilled"', function () {
+      it('cambia el estado de la promesa a "fulfilled"', function () {
         // ¿Por qué no "resolved"? Esto va a ser visto en detalle en el Ch. 5,
         // pero por ahora sabe que la terminología de P/A+ estricto dibuja una
         // distinción entre "resolution" y "fullfillment". Normalmente una
@@ -117,7 +117,7 @@ Chapter 1: Estructura básica y Cambios de Estado
         expect(promise._state).toBe("fulfilled");
       });
 
-      xit("puede enviar data a la promesa para almacenamiento", function () {
+      it("puede enviar data a la promesa para almacenamiento", function () {
         var someData = { name: "Harry Potter" };
         promise._internalResolve(someData);
         expect(promise._value).toBe(someData);
@@ -125,7 +125,7 @@ Chapter 1: Estructura básica y Cambios de Estado
 
       // Pista: usa el estado pending.
 
-      xit("no afecta una promesa ya completada", function () {
+      it("no afecta una promesa ya completada", function () {
         var data1 = { name: "Harry Potter" };
         var data2 = { name: "Gandalf" };
         promise._internalResolve(data1);
@@ -133,7 +133,7 @@ Chapter 1: Estructura básica y Cambios de Estado
         expect(promise._value).toBe(data1);
       });
 
-      xit("funciona hasta con valores falsos", function () {
+      it("funciona hasta con valores falsos", function () {
         var data1; // undefined; podría funcionar también con null, 0, false, etc.
         var data2 = "oops!";
         promise._internalResolve(data1);
