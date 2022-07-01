@@ -1,10 +1,16 @@
-'use strict';
+"use strict";
 /*----------------------------------------------------------------
 Promises Workshop: construye la libreria de ES6 promises, pledge.js
 ----------------------------------------------------------------*/
 // // TU CÓDIGO AQUÍ:
+function $Promise(executor) {
+  return executor();
+}
 
-
+$Promise.prototype._state = function (state = "pending") {
+  this.state = state;
+  return state;
+};
 
 module.exports = $Promise;
 /*-------------------------------------------------------
