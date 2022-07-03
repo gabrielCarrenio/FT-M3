@@ -6,7 +6,7 @@ Promises Workshop: construye la libreria de ES6 promises, pledge.js
 function $Promise(executor, state = "pending") {
   this._value;
   this._state = state;
-  return executor();
+  return executor(this._internalResolve, this._internalReject);
 }
 
 $Promise.prototype._internalResolve = function (someData) {
@@ -15,7 +15,12 @@ $Promise.prototype._internalResolve = function (someData) {
     this._value = someData;
   }
 };
-$Promise.prototype._internalReject = function () {};
+$Promise.prototype._internalReject = function (myReason) {
+  if (this._state === "pending") {
+    this._state = "rejected";
+    this._value = myReason;
+  }
+};
 
 module.exports = $Promise;
 /*-------------------------------------------------------
