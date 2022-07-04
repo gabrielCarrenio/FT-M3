@@ -252,7 +252,7 @@ Chapter 1: Estructura básica y Cambios de Estado
       // de todo, trabajaste muy duro para asegurarte `._internalResolve` y
       // `._internalReject` funcionan apropiadamente.
 
-      xit("es indistinguible en comportamiento a `._internalResolve`", function () {
+      it("es indistinguible en comportamiento a `._internalResolve`", function () {
         var resolver;
         var promise = new $Promise(function (resolve) {
           resolve("Use the promise machinery, Luke.");
@@ -271,7 +271,7 @@ Chapter 1: Estructura básica y Cambios de Estado
     describe("argumento reject", function () {
       // De nuevo, la resolución y el rechazo son basicamente lo mismo.
 
-      xit("rechaza la promesa", function () {
+      it("rechaza la promesa", function () {
         var promise = new $Promise(function (resolve, reject) {
           reject("Stupefy!");
         });
@@ -279,7 +279,7 @@ Chapter 1: Estructura básica y Cambios de Estado
         expect(promise._value).toBe("Stupefy!");
       });
 
-      xit("es indistinguible en comportamiento a `._internalReject`", function () {
+      it("es indistinguible en comportamiento a `._internalReject`", function () {
         var rejector;
         var promise = new $Promise(function (resolve, reject) {
           reject("You must unlearn what you have learned.");
@@ -298,7 +298,7 @@ Chapter 1: Estructura básica y Cambios de Estado
     // Esta parte debería pasar si hiciste lo de arriba correctamente.
     // Seguí la lógica:
 
-    xit("por lo tanto permite al *creator* de una nueva promesa controlar su destino, incluso asincrónicamente!", function (done) {
+    it("por lo tanto permite al *creator* de una nueva promesa controlar su destino, incluso asincrónicamente!", function (done) {
       var promise3 = new $Promise(function (resolve) {
         setTimeout(function runsInTheFuture() {
           resolve("Wow, the future is so cool.");
