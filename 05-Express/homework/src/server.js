@@ -1,7 +1,9 @@
 // const bodyParser = require("body-parser");
 const express = require("express");
 
+const STATUS_OK = 200;
 const STATUS_USER_ERROR = 422;
+let nextId = 1;
 
 // This array of posts persists in memory across requests. Feel free
 // to change this to a let binding if you need to reassign it.
@@ -10,31 +12,28 @@ let posts = []; // simula la db
 const server = express();
 // to enable parsing of json bodies for post requests
 
-server.use(express.json());
+server.use(express.json()); //aplico el midlware que me tradusca del japones al español para el server
 // TODO: your code to handle requests
 server.post("/posts", (req, res) => {
-  const post = req.body;
+  const { author, title, contents } = req.body;
   const error = {
     error: "No se recibieron los parámetros necesarios para crear el Post",
   };
 
-  if (
-    post.hasOwnProperty("author") &&
-    post.hasOwnProperty("title") &&
-    post.hasOwnProperty("contents")
-  ) {
-    let postOutput = {
-      author: post.author,
-      title: post.title,
-      contents: post.contents,
-      id: Math.floor(Math.random() * 100),
-    };
-    posts.push(postOutput);
-
-    res.status(200).send(postOutput);
-  } else {
-    res.status(STATUS_USER_ERROR).send(error);
+  if (!author || !title || !contents) {
+    // aca tener cuidado con enviar .json o .send, el send me define un content type string y el .json en obviamente un type content en json!
+    //TENER EN CUENTA EL RETURN!!! YA QUE NO CORTARIA LA LECTURA DEL CODIGO! y no se pueden enviar dos res!!!
+    return res.status(STATUS_USER_ERROR).json(error);
   }
+  let nuevoPost = {
+    author,
+    title,
+    contents,
+    id: nextId,
+  };
+  posts.push(nuevoPost);
+  nextId++;
+  res.json(nuevoPost);
 });
 
 server.post("/posts/author/:author", (req, res) => {
